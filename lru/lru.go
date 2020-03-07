@@ -7,18 +7,18 @@ import (
 
 //LRUInterface to ensure methods of LRU
 type lruInterface interface {
-	SetItem(key, value int)
-	GetItem(key int) (int, error)
+	SetItem(key, value interface{})
+	GetItem(key interface{}) (interface{}, error)
 }
 
 type item struct {
-	key   int
-	value int
+	key   interface{}
+	value interface{}
 }
 
 //LRU ...
 type LRU struct {
-	keyIndexMap   map[int]*list.Element
+	keyIndexMap   map[interface{}]*list.Element
 	size          int
 	itemList      *list.List
 	leastUsedItem *list.Element
@@ -33,7 +33,7 @@ func NewLRU(size int) (*LRU, error) {
 	}
 	return &LRU{
 		size:          size,
-		keyIndexMap:   make(map[int]*list.Element, size),
+		keyIndexMap:   make(map[interface{}]*list.Element, size),
 		itemList:      list.New(),
 		leastUsedItem: nil,
 		worstUsedItem: nil,
@@ -41,7 +41,7 @@ func NewLRU(size int) (*LRU, error) {
 }
 
 //SetItem will set the item
-func (lru *LRU) SetItem(key, value int) {
+func (lru *LRU) SetItem(key, value interface{}) {
 	if lru.itemList.Len() == lru.size {
 		tmp := lru.worstUsedItem
 		lru.worstUsedItem = tmp.Prev()
@@ -55,7 +55,7 @@ func (lru *LRU) SetItem(key, value int) {
 }
 
 //GetItem will get the item
-func (lru *LRU) GetItem(key int) (int, error) {
+func (lru *LRU) GetItem(key interface{}) (interface{}, error) {
 	k := lru.keyIndexMap[key]
 	if k == nil {
 		return 0, errors.New("not found")
